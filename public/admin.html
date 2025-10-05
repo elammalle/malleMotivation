@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Statistiques des Visiteurs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3);
+        }
+
+        .stat-card h3 {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.5);
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            color: #e2e8f0;
+            font-size: 1rem;
+        }
+
+        .search-bar input::placeholder {
+            color: #94a3b8;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tbody tr {
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(234, 179, 8, 0.2);
+            color: #facc15;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+
+        .modal-content p {
+            margin-bottom: 2rem;
+            color: #94a3b8;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Tableau de Bord Admin</h1>
+            <p>Gestion et statistiques des visiteurs du site</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Visiteurs</h3>
+                <div class="value" id="totalVisitors">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Visites Aujourd'hui</h3>
+                <div class="value" id="todayVisitors">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Interactions</h3>
+                <div class="value" id="totalInteractions">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Taux d'Interaction</h3>
+                <div class="value" id="interactionRate">0%</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="refreshData()">
+                <span>🔄</span>
+                Actualiser
+            </button>
+            <button class="btn btn-primary" onclick="exportToTxt()">
+                <span>📥</span>
+                Exporter en TXT
+            </button>
+            <button class="btn btn-secondary" onclick="exportToJSON()">
+                <span>💾</span>
+                Exporter en JSON
+            </button>
+            <button class="btn btn-danger" onclick="confirmClearData()">
+                <span>🗑️</span>
+                Effacer les données
+            </button>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher par nom d'utilisateur, localisation, appareil..." onkeyup="filterTable()">
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom d'utilisateur</th>
+                        <th>Localisation</th>
+                        <th>Appareil</th>
+                        <th>IP</th>
+                        <th>Résolution</th>
+                        <th>Langue</th>
+                        <th>Interaction</th>
+                        <th>Date de visite</th>
+                    </tr>
+                </thead>
+                <tbody id="visitorsTable">
+                    <tr>
+                        <td colspan="8" class="loading">
+                            <div class="spinner"></div>
+                            <p>Chargement des données...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2>⚠️ Confirmer la suppression</h2>
+            <p>Êtes-vous sûr de vouloir effacer toutes les données des visiteurs ? Cette action est irréversible.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn btn-danger" onclick="clearAllData()">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://rlmujswdgcqtxzljmkfw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsbXVqc3dkZ2NxdHh6bGpta2Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1ODExMjUsImV4cCI6MjA3NTE1NzEyNX0.-3U9-0a0ARxWrxC4mz4-9UDI-PbFA1IYtHXytShYyS4';
+
+        let allVisitors = [];
+
+        async function fetchVisitors() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/visitors?select=*&order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                allVisitors = await response.json();
+                updateStats();
+                displayVisitors(allVisitors);
+            } catch (error) {
+                console.error('Error fetching visitors:', error);
+                document.getElementById('visitorsTable').innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <h3>❌ Erreur de chargement</h3>
+                            <p>Impossible de charger les données. Veuillez réessayer.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function updateStats() {
+            const total = allVisitors.length;
+            const today = new Date().toDateString();
+            const todayCount = allVisitors.filter(v => {
+                const visitDate = new Date(v.created_at).toDateString();
+                return visitDate === today;
+            }).length;
+            const interactions = allVisitors.filter(v => v.response).length;
+            const rate = total > 0 ? Math.round((interactions / total) * 100) : 0;
+
+            document.getElementById('totalVisitors').textContent = total;
+            document.getElementById('todayVisitors').textContent = todayCount;
+            document.getElementById('totalInteractions').textContent = interactions;
+            document.getElementById('interactionRate').textContent = rate + '%';
+        }
+
+        function displayVisitors(visitors) {
+            const tbody = document.getElementById('visitorsTable');
+
+            if (visitors.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <h3>👻 Aucun visiteur</h3>
+                            <p>Les données des visiteurs apparaîtront ici.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = visitors.map(visitor => {
+                const date = new Date(visitor.created_at);
+                const formattedDate = date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR');
+                const username = visitor.username || 'Anonyme';
+                const interactionBadge = visitor.response
+                    ? `<span class="badge badge-success">✓ ${visitor.response}</span>`
+                    : `<span class="badge badge-warning">En attente</span>`;
+
+                return `
+                    <tr>
+                        <td><strong>${username}</strong></td>
+                        <td>${visitor.location || 'N/A'}</td>
+                        <td class="truncate" title="${visitor.device_name || 'N/A'}">${visitor.device_name || 'N/A'}</td>
+                        <td><span class="badge badge-info">${visitor.ip_address || 'N/A'}</span></td>
+                        <td>${visitor.screen_resolution || 'N/A'}</td>
+                        <td>${visitor.language || 'N/A'}</td>
+                        <td>${interactionBadge}</td>
+                        <td>${formattedDate}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allVisitors.filter(visitor => {
+                return (
+                    (visitor.username && visitor.username.toLowerCase().includes(searchTerm)) ||
+                    (visitor.location && visitor.location.toLowerCase().includes(searchTerm)) ||
+                    (visitor.device_name && visitor.device_name.toLowerCase().includes(searchTerm)) ||
+                    (visitor.ip_address && visitor.ip_address.toLowerCase().includes(searchTerm)) ||
+                    (visitor.response && visitor.response.toLowerCase().includes(searchTerm))
+                );
+            });
+            displayVisitors(filtered);
+        }
+
+        function refreshData() {
+            document.getElementById('visitorsTable').innerHTML = `
+                <tr>
+                    <td colspan="8" class="loading">
+                        <div class="spinner"></div>
+                        <p>Chargement des données...</p>
+                    </td>
+                </tr>
+            `;
+            fetchVisitors();
+        }
+
+        function exportToTxt() {
+            let content = '='.repeat(80) + '\n';
+            content += 'RAPPORT DES VISITEURS - SITE MOTIVATION\n';
+            content += 'Date d\'export: ' + new Date().toLocaleString('fr-FR') + '\n';
+            content += '='.repeat(80) + '\n\n';
+
+            content += 'STATISTIQUES GLOBALES\n';
+            content += '-'.repeat(80) + '\n';
+            content += `Total de visiteurs: ${allVisitors.length}\n`;
+            const todayCount = allVisitors.filter(v => {
+                const visitDate = new Date(v.created_at).toDateString();
+                return visitDate === new Date().toDateString();
+            }).length;
+            content += `Visites aujourd'hui: ${todayCount}\n`;
+            const interactions = allVisitors.filter(v => v.response).length;
+            content += `Total d'interactions: ${interactions}\n`;
+            const rate = allVisitors.length > 0 ? Math.round((interactions / allVisitors.length) * 100) : 0;
+            content += `Taux d'interaction: ${rate}%\n\n`;
+
+            content += '='.repeat(80) + '\n';
+            content += 'DÉTAILS DES VISITEURS\n';
+            content += '='.repeat(80) + '\n\n';
+
+            allVisitors.forEach((visitor, index) => {
+                content += `VISITEUR #${index + 1}\n`;
+                content += '-'.repeat(80) + '\n';
+                content += `Nom d'utilisateur: ${visitor.username || 'Anonyme'}\n`;
+                content += `Localisation: ${visitor.location || 'N/A'}\n`;
+                content += `Appareil: ${visitor.device_name || 'N/A'}\n`;
+                content += `Adresse IP: ${visitor.ip_address || 'N/A'}\n`;
+                content += `Résolution d'écran: ${visitor.screen_resolution || 'N/A'}\n`;
+                content += `Langue: ${visitor.language || 'N/A'}\n`;
+                content += `User Agent: ${visitor.user_agent || 'N/A'}\n`;
+                content += `Interaction: ${visitor.response || 'Aucune'}\n`;
+                if (visitor.response_time) {
+                    content += `Date d'interaction: ${new Date(visitor.response_time).toLocaleString('fr-FR')}\n`;
+                }
+                content += `Date de visite: ${new Date(visitor.created_at).toLocaleString('fr-FR')}\n`;
+                content += '\n';
+            });
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `visiteurs_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function exportToJSON() {
+            const data = {
+                export_date: new Date().toISOString(),
+                statistics: {
+                    total_visitors: allVisitors.length,
+                    today_visitors: allVisitors.filter(v => {
+                        const visitDate = new Date(v.created_at).toDateString();
+                        return visitDate === new Date().toDateString();
+                    }).length,
+                    total_interactions: allVisitors.filter(v => v.response).length,
+                    interaction_rate: allVisitors.length > 0
+                        ? Math.round((allVisitors.filter(v => v.response).length / allVisitors.length) * 100)
+                        : 0
+                },
+                visitors: allVisitors
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `visiteurs_${new Date().getTime()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function confirmClearData() {
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        async function clearAllData() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/visitors?id=neq.00000000-0000-0000-0000-000000000000`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (response.ok) {
+                    closeModal();
+                    refreshData();
+                    alert('✅ Toutes les données ont été effacées avec succès.');
+                } else {
+                    alert('❌ Erreur lors de la suppression des données.');
+                }
+            } catch (error) {
+                console.error('Error clearing data:', error);
+                alert('❌ Erreur lors de la suppression des données.');
+            }
+        }
+
+        window.addEventListener('load', fetchVisitors);
+
+        setInterval(fetchVisitors, 30000);
+    </script>
+</body>
+</html>

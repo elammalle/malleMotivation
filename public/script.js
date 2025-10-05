@@ -73,10 +73,20 @@ function getDeviceInfo() {
     };
 }
 
+function generateUsername() {
+    const adjectives = ['Rapide', 'Brillant', 'Cosmic', 'Mystique', 'Lumineux', 'Éternel', 'Sage', 'Noble', 'Vaillant', 'Calme'];
+    const nouns = ['Étoile', 'Voyageur', 'Explorateur', 'Rêveur', 'Penseur', 'Créateur', 'Aventurier', 'Sage', 'Artiste', 'Visionnaire'];
+    const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+    const randomNum = Math.floor(Math.random() * 1000);
+    return `${randomAdj}${randomNoun}${randomNum}`;
+}
+
 async function trackVisitor() {
     try {
         const locationInfo = await getLocationInfo();
         const deviceInfo = getDeviceInfo();
+        const username = generateUsername();
 
         const response = await fetch(`${SUPABASE_URL}/rest/v1/visitors`, {
             method: 'POST',
@@ -87,6 +97,7 @@ async function trackVisitor() {
                 'Prefer': 'return=representation'
             },
             body: JSON.stringify({
+                username: username,
                 ...locationInfo,
                 ...deviceInfo
             })
@@ -96,7 +107,8 @@ async function trackVisitor() {
         if (data && data.length > 0) {
             visitorId = data[0].id;
             localStorage.setItem('visitorId', visitorId);
-            console.log('Visitor tracked:', visitorId);
+            localStorage.setItem('username', username);
+            console.log('Visitor tracked:', visitorId, username);
         }
     } catch (error) {
         console.error('Error tracking visitor:', error);
