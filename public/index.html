@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspiration Quotidienne - Trouvez Votre Motivation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="floating-stars-container" id="floatingStars"></div>
+
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="sparkle-icon">⭐</div>
+            <h1 class="hero-title animate-fade-in-down">Inspiration Quotidienne</h1>
+            <p class="hero-subtitle animate-fade-in-up delay-2">Découvrez la beauté de l'univers et trouvez votre motivation intérieure</p>
+        </div>
+    </section>
+
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-item animate-slide-in-left">
+                <div class="photo-card">
+                    <img src="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Montagnes majestueuses">
+                </div>
+                <div class="quote-card">
+                    <blockquote>
+                        "Les montagnes nous enseignent que les obstacles les plus grands peuvent être surmontés avec patience et détermination."
+                        <footer>— Sagesse de la Nature</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="gallery-item reverse animate-slide-in-right">
+                <div class="photo-card">
+                    <img src="https://images.pexels.com/photos/1252873/pexels-photo-1252873.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Galaxie étoilée">
+                </div>
+                <div class="quote-card">
+                    <blockquote>
+                        "Regardez les étoiles, et non vos pieds. Essayez de donner un sens à ce que vous voyez et demandez-vous ce qui fait exister l'univers."
+                        <footer>— Stephen Hawking</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="gallery-item animate-slide-in-left">
+                <div class="photo-card">
+                    <img src="https://images.pexels.com/photos/531756/pexels-photo-531756.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Océan au coucher du soleil">
+                </div>
+                <div class="quote-card">
+                    <blockquote>
+                        "Comme l'océan, la vie a ses hauts et ses bas. Mais chaque vague finit par toucher le rivage."
+                        <footer>— Philosophie de la Mer</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="gallery-item reverse animate-slide-in-right">
+                <div class="photo-card">
+                    <img src="https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Aurore boréale">
+                </div>
+                <div class="quote-card">
+                    <blockquote>
+                        "La vie est comme une aurore boréale : magique, éphémère et d'une beauté qui coupe le souffle."
+                        <footer>— Inspiration Nordique</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="gallery-item animate-slide-in-left">
+                <div class="photo-card">
+                    <img src="https://images.pexels.com/photos/1274260/pexels-photo-1274260.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Voie lactée">
+                </div>
+                <div class="quote-card">
+                    <blockquote>
+                        "Nous sommes tous faits de poussière d'étoiles. Chacun de nous porte l'univers en lui."
+                        <footer>— Carl Sagan</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="center-quote animate-fade-in">
+                <blockquote>
+                    "N'oubliez pas de lever les yeux vers les étoiles et non vers le bas, vers vos pieds. Soyez curieux."
+                    <footer>— Stephen Hawking</footer>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <section class="motivation-section">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+
+        <div class="motivation-content">
+            <div class="icon">🌟</div>
+            <h2 class="motivation-title">Votre Moment d'Inspiration</h2>
+
+            <div class="motivation-message">
+                <p>Chaque jour est une nouvelle opportunité de grandir, d'apprendre et de devenir la meilleure version de vous-même.</p>
+                <p>Comme l'univers qui s'étend infiniment, votre potentiel n'a pas de limites. Embrassez chaque défi comme une étoile illuminant votre chemin.</p>
+            </div>
+
+            <div id="motivationContainer">
+                <button id="showMotivationBtn" class="show-motivation-btn">
+                    <span>✨</span>
+                    Recevez votre message du jour
+                    <span>🌟</span>
+                </button>
+            </div>
+
+            <div id="motivationMessage" class="motivation-reveal" style="display: none;">
+                <h3 class="reveal-text">Vous êtes capable de grandes choses !</h3>
+                <p class="reveal-subtext">Croyez en vous et tout devient possible. L'univers conspire en votre faveur.</p>
+                <div class="sparkle-bottom">✨</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Inspirez-vous chaque jour de la beauté qui vous entoure</p>
+        <div class="footer-stars">
+            <span class="footer-star">⭐</span>
+            <span class="footer-star delay-1">🌟</span>
+            <span class="footer-star delay-2">✨</span>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
